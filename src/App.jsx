@@ -1,121 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="flex h-screen w-full bg-slate-950 text-slate-50 overflow-hidden font-sans">
+      {/* SIDEBAR */}
+      <aside className="w-64 border-r border-slate-800 p-6 flex flex-col gap-8 bg-slate-950">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-blue-600 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.4)]"></div>
+          <h1 className="text-xl font-bold tracking-tighter text-white">MISSION CONTROL</h1>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        <nav className="flex flex-col gap-2 text-slate-400">
+          <div className="p-2 hover:bg-slate-900 hover:text-white rounded-lg cursor-pointer transition-all">Dashboard</div>
+          <div className="p-2 hover:bg-slate-900 hover:text-white rounded-lg cursor-pointer transition-all">System Logs</div>
+        </nav>
+      </aside>
 
-      <div className="ticks"></div>
+      {/* MAIN CONTENT */}
+      <main className="flex-1 flex flex-col bg-slate-950/50">
+        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-950/80 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <span className="text-sm font-semibold tracking-wide text-slate-200">SYSTEM ONLINE</span>
+          </div>
+        </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        {/* BENTO GRID */}
+        <div className="p-8 grid grid-cols-4 grid-rows-3 gap-6 flex-1">
+          <div className="col-span-1 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">CPU USAGE</div>
+          <div className="col-span-1 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">MEMORY</div>
+          <div className="col-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">NETWORK</div>
+          <div className="col-span-3 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">LIVE VISUALIZER</div>
+          <div className="col-span-1 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">ALERTS</div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
