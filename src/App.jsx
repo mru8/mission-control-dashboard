@@ -1,4 +1,5 @@
 import React from 'react';
+import MetricCard from './components/MetricCard';
 
 function App() {
   return (
@@ -29,9 +30,9 @@ function App() {
 
         {/* BENTO GRID */}
         <div className="p-8 grid grid-cols-4 grid-rows-3 gap-6 flex-1">
-          <div className="col-span-1 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">CPU USAGE</div>
-          <div className="col-span-1 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">MEMORY</div>
-          <div className="col-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center">NETWORK</div>
+          <MetricCard title="CPU Usage" value="42" unit="%" trend="+2.1%" colorClass="text-blue-400" />
+          <MetricCard title="System RAM" value="12.4" unit="GB" trend="-0.5%" colorClass="text-purple-400" />
+          <MetricCard title="Network" value="850" unit="kbps" trend="Stable" colorClass="text-green-400" />
           <div className="col-span-3 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">LIVE VISUALIZER</div>
           <div className="col-span-1 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">ALERTS</div>
         </div>
