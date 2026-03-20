@@ -1,7 +1,31 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import MetricCard from './components/MetricCard';
 
 function App() {
+  // This will create "state" (memory) for CPU usage, starting at 40
+  const [cpu, setCpu] = useState(40);
+  const [network, setNetwork] = useState(850);
+
+  // This will create a "heartbeat" (effect) that runs every 2 seconds
+  useEffect(() => {
+    // cpu interval (every 2sec)
+    const cpuInterval = setInterval(() => {
+      const randomValue = Math.floor(Math.random() * (90-30+1)) + 30;
+      setCpu(randomValue);
+    }, 2000);
+
+    // network interval (every 500ms)
+    const netInterval = setInterval(() => {
+      setNetwork(Math.floor(Math.random() * (950 - 100 + 1)) + 100);
+    }, 500);
+
+    // clean up both intervals
+    return () => {
+      clearInterval(cpuInterval);
+      clearInterval(netInterval);
+    };
+  }, []);
+
   return (
     <div className="flex h-screen w-full bg-slate-950 text-slate-50 overflow-hidden font-sans">
       {/* SIDEBAR */}
@@ -30,9 +54,9 @@ function App() {
 
         {/* BENTO GRID */}
         <div className="p-8 grid grid-cols-4 grid-rows-3 gap-6 flex-1">
-          <MetricCard title="CPU Usage" value="42" unit="%" trend="+2.1%" colorClass="text-blue-400" />
+          <MetricCard title="CPU Usage" value={cpu} unit="%" trend={cpu > 80 ? "CRITICAL" : "+2.1%"} colorClass={cpu > 80 ? "text-red-500" : "text-blue-400"} />
           <MetricCard title="System RAM" value="12.4" unit="GB" trend="-0.5%" colorClass="text-purple-400" />
-          <MetricCard title="Network" value="850" unit="kbps" trend="Stable" colorClass="text-green-400" />
+          <MetricCard title="Network Speed" value={network} unit="kbps" trend={network > 800 ? "PEAK" : "STABLE"} colorClass={network > 800 ? "text-green-400" : "text-slate-400"} />
           <div className="col-span-3 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">LIVE VISUALIZER</div>
           <div className="col-span-1 row-span-2 bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex justify-center items-center text-slate-700 font-bold">ALERTS</div>
         </div>
