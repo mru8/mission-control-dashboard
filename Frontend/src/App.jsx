@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import MetricCard from './components/MetricCard';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws/stats';
+
 function App() {
   // Real data state streams
   const [currentMetrics, setCurrentMetrics] = useState({ cpu: 0, ram: 0, network: 0 });
@@ -11,46 +13,56 @@ function App() {
   ]);
   const [connected, setConnected] = useState(false);
 
-  // Connect to FastAPI Live WebSocket Stream
   useEffect(() => {
-    // Locate local backend port. Standard Uvicorn port is 8000
-    const ws = new WebSocket('ws://localhost:8000/ws/stats');
+    let ws;
+    let retryTimer;
+    let stopped = false;
 
-    ws.onopen = () => setConnected(true);
-    ws.onclose = () => setConnected(false);
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      // 1. Update current absolute numbers
-      setCurrentMetrics({
-        cpu: data.cpu,
-        ram: data.ram,
-        network: data.network
-      });
+    const connect = () => {
+      ws = new WebSocket(WS_URL);
 
-      // 2. Append to historical data matrix (Cap at last 25 ticks to protect memory)
-      setHistory((prevHistory) => {
-        const updated = [...prevHistory, { time: data.timestamp, CPU: data.cpu, RAM: data.ram }];
-        if (updated.length > 25) updated.shift();
-        return updated;
-      });
+      ws.onopen = () => setConnected(true);
 
-      // 3. Evaluate alerts sent from backend
-      if (data.has_alert) {
-        setLogs((prevLogs) => {
-          const newAlert = {
-            id: Date.now(),
-            text: data.alert_text,
-            time: data.timestamp
-          };
-          // Clamp logs to last 8 notifications
-          return [newAlert, ...prevLogs].slice(0, 8);
+      ws.onclose = () => {
+        setConnected(false);
+        if (!stopped) retryTimer = setTimeout(connect, 3000);
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        setCurrentMetrics({
+          cpu: data.cpu,
+          ram: data.ram,
+          network: data.network
         });
-      }
+
+        setHistory((prevHistory) => {
+          const updated = [...prevHistory, { time: data.timestamp, CPU: data.cpu, RAM: data.ram }];
+          if (updated.length > 25) updated.shift();
+          return updated;
+        });
+
+        if (data.has_alert) {
+          setLogs((prevLogs) => {
+            const newAlert = {
+              id: Date.now(),
+              text: data.alert_text,
+              time: data.timestamp
+            };
+            return [newAlert, ...prevLogs].slice(0, 8);
+        });
+        }
+      };
     };
 
-    return () => ws.close();
+    connect();
+
+    return () => {
+      stopped = true;
+      clearTimeout(retryTimer);
+      ws.close();
+    };
   }, []);
 
   return (

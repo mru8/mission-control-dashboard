@@ -25,12 +25,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        working-directory: Frontend
 
       - name: Build
         run: npm run build
+        working-directory: Frontend
+        env:
+          VITE_WS_URL: wss://REPLACE-WITH-YOUR-RENDER-URL.onrender.com/ws/stats
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -38,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist'
+          path: 'Frontend/dist'
 
   deploy:
     environment:
